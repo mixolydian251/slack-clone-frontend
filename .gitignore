@@ -1,0 +1,8 @@
+/node_modules
+webpack.config.js
+postcss.config.js
+.env.development
+.env.production
+.env.test
+/.idea
+slack-clone-frontend.iml
