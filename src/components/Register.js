@@ -20,35 +20,24 @@ class Register extends React.Component {
     email: '',
     password: '',
     verifyPassword: '',
-    passwordDoesNotMatch: false
+    passwordDoesNotMatch: false,
+    submitError: false,
   };
 
-  onUsernameChange = e => {
-    const username = e.target.value;
-    this.setState({username})
-  };
-
-  onEmailChange = e => {
-    const email = e.target.value;
-    this.setState({email})
-  };
-
-  onPasswordChange = e => {
-    const password = e.target.value;
-    this.setState({password})
-  };
-
-  onVerifyPasswordChange = e => {
-    const verifyPassword = e.target.value;
-    this.setState({verifyPassword});
+  onChange = e => {
+    const { name, value } = e.target;
+    this.setState({[name]: value})
   };
 
   createUser = async (register) => {
-    if (this.state.password !== this.state.verifyPassword) {
-      this.setState({passwordDoesNotMatch: true});
+    if(!this.state.username || !this.state.email || !this.state.password || !this.state.verifyPassword){
+      this.setState({submitError: true});
+    }
+    else if (this.state.password !== this.state.verifyPassword) {
+      this.setState({passwordDoesNotMatch: true, submitError: false});
     }
     else {
-      this.setState({passwordDoesNotMatch: false});
+      this.setState({passwordDoesNotMatch: false,  submitError: false});
       const response = await register({
         variables: {
           username: this.state.username,
@@ -57,13 +46,8 @@ class Register extends React.Component {
         }
       });
 
-      console.log(response);
-
       if (response.data.register.ok) {
         this.props.history.push("/")
-      }
-      else {
-        console.log(response.data.register.ok);
       }
     }
   };
@@ -73,7 +57,7 @@ class Register extends React.Component {
       <Mutation mutation={createUserMutation}>
         { (register, { data }) => (
 
-          <div className="register">
+          <div className="login">
 
             <h1 className="register__title">Create an account</h1>
 
@@ -85,7 +69,7 @@ class Register extends React.Component {
                         type="text"
                         className="register__form--item"
                         value={this.state.username}
-                        onChange={this.onUsernameChange}/>
+                        onChange={this.onChange}/>
 
                 { // display error if username is already taken
                   data && !data.register.ok && data.register.errors[0].path === 'username'
@@ -98,7 +82,7 @@ class Register extends React.Component {
                         type="text"
                         className="register__form--item"
                         value={this.state.email}
-                        onChange={this.onEmailChange}/>
+                        onChange={this.onChange}/>
 
                 { // display error if username is already taken
                   data && !data.register.ok && data.register.errors[0].path === 'email'
@@ -111,7 +95,7 @@ class Register extends React.Component {
                         type="password"
                         className="register__form--item"
                         value={this.state.password}
-                        onChange={this.onPasswordChange}/>
+                        onChange={this.onChange}/>
 
                 { // display error if password does not meet requirements
                   data && !data.register.ok && data.register.errors[0].path === 'password'
@@ -119,12 +103,12 @@ class Register extends React.Component {
               </div>
 
               <div>
-                <input  name="verify password"
+                <input  name="verifyPassword"
                         placeholder="Re-type Password"
                         type="password"
                         className="register__form--item"
                         value={this.state.verifyPassword}
-                        onChange={this.onVerifyPasswordChange}/>
+                        onChange={this.onChange}/>
 
                 { // display error if passwords do not match
                   this.state.passwordDoesNotMatch &&
@@ -135,6 +119,10 @@ class Register extends React.Component {
                       onClick={() => {this.createUser(register)}}>
                 Create Account
               </button>
+
+              { // display error if passwords do not match
+                this.state.submitError &&
+                <p className="register__form--error">Fill out all of the fields to register</p> }
 
             </div>
           </div>

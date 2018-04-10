@@ -1,4 +1,8 @@
 /node_modules
+/public/bundle.js
+/public/bundle.js.map
+/public/style.js
+/public/style.js.map
 webpack.config.js
 postcss.config.js
 .env.development
@@ -6,3 +10,4 @@ postcss.config.js
 .env.test
 /.idea
 slack-clone-frontend.iml
+yarn.lock
