@@ -31,19 +31,17 @@ class Login extends React.Component{
     })
   }
 
-
   onChange = e => {
     const { name, value } = e.target;
     this[name] = value;
   };
 
-  onLogin = async (login) => {
+  onLogin = async (e, login) => {
+    e.preventDefault();
     const { email, password } = this;
 
-    console.log("Hit Login");
-
-    if (!this.state.email || !this.state.password){
-      this.setState({submitError: true})
+    if (!this.email || !this.password){
+      this.submitError = true;
     }
     else {
       const response = await login({
@@ -53,12 +51,13 @@ class Login extends React.Component{
         }
       });
 
-      const status = response.data.login;
+      const {ok, token, refreshToken} = response.data.login;
 
-      if (status.ok) {
+      if (ok) {
         this.props.history.push("/");
-        console.log("Login Successful");
-        console.log(status)
+        localStorage.setItem("token", token);
+        localStorage.setItem("refreshToken", refreshToken);
+        console.log(token, refreshToken)
       }
     }
   };
@@ -74,7 +73,8 @@ class Login extends React.Component{
 
               <div className="login">
                 <h1 className="login__title">Login</h1>
-                <div className="login__form">
+                <form className="login__form"
+                      onSubmit={ (e) => {this.onLogin(e, login) }}>
 
                   <div>
                     <input  name="email"
@@ -82,7 +82,7 @@ class Login extends React.Component{
                             type="text"
                             autoComplete
                             className="login__form--item"
-                            value={this.state.email}
+                            value={this.email}
                             onChange={this.onChange}/>
 
                     { // Display email Error
@@ -99,7 +99,7 @@ class Login extends React.Component{
                             type="password"
                             autoComplete
                             className="login__form--item"
-                            value={this.state.password}
+                            value={this.password}
                             onChange={this.onChange}/>
 
                     { // Display password Error
@@ -112,15 +112,15 @@ class Login extends React.Component{
 
                   <button className="login__form--button"
                           type="submit"
-                          onClick={() => {this.onLogin(login)}}>
+                          >
                     Login
                   </button>
 
                   { // Display field left blank Error
-                    this.state.submitError &&
+                    this.submitError &&
                     <p className="login__form--error">Enter your email and password</p> }
 
-                </div>
+                </form>
               </div>
 
             )}
