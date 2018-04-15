@@ -5,7 +5,7 @@ import HomePage from "../components/HomePage";
 import Login from "../components/Login";
 import Register from "../components/Register";
 import CreateTeam from "../components/CreateTeam";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../components/Dashboard/Dashboard";
 import PageNotFound from "../components/PageNotFound";
 
 import PrivateRoute from "./PrivateRoute";
