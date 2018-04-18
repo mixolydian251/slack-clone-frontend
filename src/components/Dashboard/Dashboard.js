@@ -14,46 +14,53 @@ const dashboardQuery = gql`
       username
     }
     allUsers {
+      id
       username
       email
     }
     allTeams{
+      id
       name
+      channels {
+        id
+        name
+      }
     }
   }
 `;
 
 class Dashboard extends React.Component {
 
-  state = {
-    team: undefined
-  };
-
-  changeTeam = team => {
-    console.log("Changing Team");
-    this.setState({team})
-  };
-
   render() {
-    const {team} = this.state;
     return (
-      <Query query={dashboardQuery}>
+      <Query query={ dashboardQuery }>
         {({ loading, error, data }) => {
 
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error!: {error}</p>;
 
           if(data) {
+
             const { getUser, allUsers, allTeams } = data;
+
+            const currentTeam = data.allTeams.filter( team => {
+              return team.id === Number(this.props.match.params.teamId)
+            })[0];
+
+            const currentChannel = currentTeam.channels.filter(channel => {
+              return channel.id === Number(this.props.match.params.channelId)
+            })[0];
+
             return (
               <div className="dashboard">
-                <Teams teams={allTeams} changeTeam={this.changeTeam}/>
+                <Teams teams={ allTeams }/>
                 <Channels
-                  teamName={team}
-                  username={getUser.username}
-                  channels={[{id: 1, name: "general"}, {id: 2, name: "random"}]}
-                  users={allUsers}/>
-                <Header/>
+                  teamName={ currentTeam.name }
+                  teamId={this.props.match.params.teamId}
+                  username={ getUser.username }
+                  channels={ currentTeam.channels }
+                  users={ allUsers }/>
+                <Header channel={currentChannel ? currentChannel.name : ""}/>
                 <Messages/>
                 <SendMessage/>
               </div>

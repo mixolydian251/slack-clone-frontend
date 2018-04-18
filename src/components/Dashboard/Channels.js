@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const user = ({id, username}) =>  (
     <div className="sidebar__user" key={`user-${id}`}>
@@ -13,6 +14,7 @@ const channel = ({id, name}) => (
 
 const Channels = ({
   teamName,
+  teamId,
   username,
   channels,
   users
@@ -29,7 +31,15 @@ const Channels = ({
 
       <div className="sidebar__section">
         <h3 className="sidebar__section--title">Channels</h3>
-        {channels.map(channel)}
+        {
+          channels.map(({id, name}) => (
+            <Link to={`/dashboard/${teamId}/${id}`}
+                  className="sidebar__section--item"
+                  key={`channel-${id}`}>
+              {name}
+            </Link>
+          ))
+        }
       </div>
 
       <div className="sidebar__section">

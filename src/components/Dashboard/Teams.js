@@ -1,15 +1,15 @@
 import React from 'react';
 import Team from './Team';
 
-const Teams = ({teams, changeTeam}) => (
+const Teams = ({teams}) => (
   <div className="teams">
     <h1 className="teams__title">Teams</h1>
 
     { teams.map( team => (
-        <Team id={`team-${team.id}`}
+        <Team key={`team-${team.id}`}
         letter={team.name[0].toUpperCase()}
-        name={team.name}
-        changeTeam={changeTeam}/> ))}
+        id={team.id}
+        name={team.name} /> ))}
 
   </div>
 );

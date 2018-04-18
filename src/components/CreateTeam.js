@@ -85,7 +85,7 @@ class CreateTeam extends React.Component{
                     <input  name="name"
                             placeholder="Team Name"
                             type="text"
-                            autoComplete
+                            autoComplete="true"
                             className="login__form--item"
                             value={this.name}
                             onChange={this.onChange}/>

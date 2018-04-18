@@ -79,7 +79,7 @@ class Login extends React.Component{
                     <input  name="email"
                             placeholder="Email"
                             type="text"
-                            autoComplete
+                            autoComplete="true"
                             className="login__form--item"
                             value={this.email}
                             onChange={this.onChange}/>
@@ -96,7 +96,7 @@ class Login extends React.Component{
                     <input  name="password"
                             placeholder="Password"
                             type="password"
-                            autoComplete
+                            autoComplete="true"
                             className="login__form--item"
                             value={this.password}
                             onChange={this.onChange}/>
