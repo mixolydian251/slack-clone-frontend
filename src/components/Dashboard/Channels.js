@@ -1,32 +1,43 @@
 import React from 'react';
 
-const Channels = () => (
-  <div className="channels">
-
-    <div className="channels__title">
-      <h1 className="channels__title--team">Team Name</h1>
+const user = ({id, username}) =>  (
+    <div className="sidebar__user" key={`user-${id}`}>
+      <span className="sidebar__user--status"> </span>
+      <span className="sidebar__user--name">{username}</span>
     </div>
+  );
 
-    <p className="channels__channel">#Channel 1</p>
-    <p className="channels__channel">#Chaasdfnnel 2</p>
-    <p className="channels__channel">#Channel 3</p>
-    <p className="channels__channel">#Chanfdfnel 4</p>
-    <p className="channels__channel">#Channel 5</p>
-    <p className="channels__channel">#Chaasdfasnnel 6</p>
-    <p className="channels__channel">#Channel 1</p>
-    <p className="channels__channel">#Channel 2</p>
-    <p className="channels__channel">#Channtertul 3</p>
-    <p className="channels__channel">#Chattnnel 4</p>
-    <p className="channels__channel">#Chattttttnnel 5</p>
-    <p className="channels__channel">#Chagtthfhrnnel 6</p>
-    <p className="channels__channel">#Channel 1</p>
-    <p className="channels__channel">#Channel 2</p>
-    <p className="channels__channel">#Cthannel 3</p>
-    <p className="channels__channel">#Channel 4</p>
-    <p className="channels__channel">#Chaynnel 5</p>
-    <p className="channels__channel">#Charetynnel 6</p>
+const channel = ({id, name}) => (
+    <p className="sidebar__section--item" key={`channel-${id}`}>{name}</p>
+  );
 
-  </div>
+const Channels = ({
+  teamName,
+  username,
+  channels,
+  users
+  }) => (
+    <div className="sidebar">
+
+      <div className="sidebar__title">
+        <div className="sidebar__title--user sidebar__user">
+          <span className="sidebar__user--status"> </span>
+          <span className="sidebar__user--name">{username}</span>
+        </div>
+        { teamName && <h1 className="sidebar__title--team">{teamName}</h1> }
+      </div>
+
+      <div className="sidebar__section">
+        <h3 className="sidebar__section--title">Channels</h3>
+        {channels.map(channel)}
+      </div>
+
+      <div className="sidebar__section">
+        <h3 className="sidebar__section--title">Users</h3>
+        {users.map(user)}
+      </div>
+
+    </div>
 );
 
 export default Channels;

@@ -1,24 +1,16 @@
 import React from 'react';
 import Team from './Team';
 
-const Teams = () => (
+const Teams = ({teams, changeTeam}) => (
   <div className="teams">
     <h1 className="teams__title">Teams</h1>
-    <Team letter="T"/>
-    <Team letter="J"/>
-    <Team letter="H"/>
-    <Team letter="T"/>
-    <Team letter="J"/>
-    <Team letter="H"/>
-    <Team letter="T"/>
-    <Team letter="J"/>
-    <Team letter="H"/>
-    <Team letter="T"/>
-    <Team letter="J"/>
-    <Team letter="H"/>
-    <Team letter="T"/>
-    <Team letter="J"/>
-    <Team letter="H"/>
+
+    { teams.map( team => (
+        <Team id={`team-${team.id}`}
+        letter={team.name[0].toUpperCase()}
+        name={team.name}
+        changeTeam={changeTeam}/> ))}
+
   </div>
 );
 
