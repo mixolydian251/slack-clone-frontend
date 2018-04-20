@@ -1,5 +1,7 @@
 import React from 'react';
 import Team from './Team';
+import { Query } from 'react-apollo';
+import { allTeams } from "../../graphql/query";
 
 class Teams extends React.Component {
   state = {
@@ -12,19 +14,43 @@ class Teams extends React.Component {
 
   render() {
     return (
-      <div className="teams"
-           onMouseLeave={() => this.previewTeamName("Teams")} >
-        <h1 className="teams__title">{this.state.teamName}</h1>
+      <Query query={ allTeams }>
+        {({ loading, error, data }) => {
 
-        { this.props.teams.map( team => (
-          <Team key={`team-${team.id}`}
-                letter={team.name[0].toUpperCase()}
-                id={team.id}
-                name={team.name}
-                previewTeamName={this.previewTeamName}/> ))}
-      </div>
-    )
+          if (loading) return null;
+          if (error) return <p>Error!: {error}</p>;
+
+          if(data) {
+
+            const { allTeams } = data;
+
+            return (
+              <div className="teams"
+                   onMouseLeave={() => this.previewTeamName("Teams")} >
+                <h1 className="teams__title">{this.state.teamName}</h1>
+
+                { allTeams.map( team => (
+                  <Team key={`team-${team.id}`}
+                        letter={team.name[0].toUpperCase()}
+                        id={team.id}
+                        name={team.name}
+                        previewTeamName={this.previewTeamName}/> ))}
+              </div>
+            )
+          }
+        }}
+      </Query>
+    );
   }
 }
 
 export default Teams;
+
+
+
+
+
+
+
+
+

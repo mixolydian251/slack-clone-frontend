@@ -1,33 +1,12 @@
 import React from 'react';
 import { Query } from 'react-apollo';
-import gql from "graphql-tag";
+import { dashboardQuery } from "../../graphql/query"
 
-import Channels from './Channels';
+import Sidebar from './Sidebar';
 import Header from './Header'
 import Messages from './Messages'
 import SendMessage from './SendMessage'
 import Teams from './Teams'
-
-const dashboardQuery = gql`
-  query {
-    getUser{
-      username
-    }
-    allUsers {
-      id
-      username
-      email
-    }
-    allTeams{
-      id
-      name
-      channels {
-        id
-        name
-      }
-    }
-  }
-`;
 
 class Dashboard extends React.Component {
 
@@ -36,21 +15,22 @@ class Dashboard extends React.Component {
       <Query query={ dashboardQuery }>
         {({ loading, error, data }) => {
 
-          if (loading) return <p>Loading...</p>;
+          if (loading) return null;
           if (error) return <p>Error!: {error}</p>;
 
           if(data) {
 
-            const { getUser, allUsers, allTeams } = data;
+            const { getUser, allTeams } = data;
+            const teamId = this.props.match.params.teamId;
+            const channelId = this.props.match.params.channelId;
             let currentTeam;
-            let currentChannel;
-
 
             if (this.props.match.params.teamId){
-              currentTeam = data.allTeams.filter( team => {
+              currentTeam = allTeams.filter( team => {
                 return team.id === Number(this.props.match.params.teamId)
               })[0];
             }
+
             else {
               currentTeam = {
                 name: undefined,
@@ -58,21 +38,21 @@ class Dashboard extends React.Component {
               }
             }
 
-            currentChannel = currentTeam.channels.filter( channel => {
-              return channel.id === Number(this.props.match.params.channelId)
-            })[0];
-
             return (
               <div className="dashboard">
-                <Teams teams={ allTeams }/>
-                <Channels
+                <Teams/>
+
+                <Sidebar
                   history={this.props.history}
                   teamName={ currentTeam.name }
-                  teamId={ this.props.match.params.teamId }
-                  username={ getUser.username }
-                  channels={ currentTeam.channels }
-                  users={ allUsers }/>
-                <Header channel={ currentChannel ? currentChannel.name : ""}/>
+                  teamId={ teamId }
+                  username={ getUser.username }/>
+
+                { channelId &&
+                  <Header
+                    teamId={ teamId }
+                    channelId={ channelId }/> }
+
                 <Messages/>
                 <SendMessage/>
               </div>

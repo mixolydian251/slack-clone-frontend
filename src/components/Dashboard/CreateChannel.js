@@ -2,6 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag'
 import onClickOutside from "react-onclickoutside";
 import { Mutation } from 'react-apollo';
+import { getChannels } from "../../graphql/query"
 
 const createChannelMutation = ( gql`
  mutation createChannel($name: String!, $teamId: Int!, $isPublic: Boolean!) {
@@ -11,7 +12,6 @@ const createChannelMutation = ( gql`
       id
       teamId
       name
-      public
     }
   }
 }`);
@@ -51,19 +51,14 @@ class CreateChannel extends React.Component{
 
       let response = null;
 
-      console.log({
-        teamId: Number(teamId),
-        name,
-        isPublic
-      });
-
       try {
         response = await createChannel({
           variables: {
-            teamId: Number(teamId),
+            teamId: teamId,
             name,
             isPublic
-          }
+          },
+          refetchQueries: [ { query: getChannels, variables: { teamId } }]
         });
       }
       catch (err) {
@@ -74,7 +69,6 @@ class CreateChannel extends React.Component{
       const { ok, channel } = response.data.createChannel;
 
       if (ok) {
-        this.props.pushNewChannel(channel);
         this.props.closeModal();
         this.props.history.push(`/dashboard/${teamId}/${channel.id}`);
       }
@@ -84,12 +78,11 @@ class CreateChannel extends React.Component{
   render(){
     return(
 
-      <Mutation mutation={createChannelMutation} >
-        {(createChannel, { data }) => (
-
+      <Mutation mutation={createChannelMutation}>
+        {(createChannel) => (
           <div >
             <form className="modal__form"
-                  onSubmit={ (e) => {this.onCreateChannel(e, createChannel) }}>
+                  onSubmit={ (e) => {this.onCreateChannel(e, createChannel)}}>
 
               <div>
                 <input  name="name"
@@ -121,12 +114,11 @@ class CreateChannel extends React.Component{
 
             </form>
           </div>
-
-        )}
+          )
+        }
       </Mutation>
     )
   }
 }
 
 export default onClickOutside(CreateChannel);
-
