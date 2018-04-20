@@ -42,12 +42,23 @@ class Dashboard extends React.Component {
           if(data) {
 
             const { getUser, allUsers, allTeams } = data;
+            let currentTeam;
+            let currentChannel;
 
-            const currentTeam = data.allTeams.filter( team => {
-              return team.id === Number(this.props.match.params.teamId)
-            })[0];
 
-            const currentChannel = currentTeam.channels.filter(channel => {
+            if (this.props.match.params.teamId){
+              currentTeam = data.allTeams.filter( team => {
+                return team.id === Number(this.props.match.params.teamId)
+              })[0];
+            }
+            else {
+              currentTeam = {
+                name: undefined,
+                channels: []
+              }
+            }
+
+            currentChannel = currentTeam.channels.filter( channel => {
               return channel.id === Number(this.props.match.params.channelId)
             })[0];
 
@@ -55,12 +66,13 @@ class Dashboard extends React.Component {
               <div className="dashboard">
                 <Teams teams={ allTeams }/>
                 <Channels
+                  history={this.props.history}
                   teamName={ currentTeam.name }
-                  teamId={this.props.match.params.teamId}
+                  teamId={ this.props.match.params.teamId }
                   username={ getUser.username }
                   channels={ currentTeam.channels }
                   users={ allUsers }/>
-                <Header channel={currentChannel ? currentChannel.name : ""}/>
+                <Header channel={ currentChannel ? currentChannel.name : ""}/>
                 <Messages/>
                 <SendMessage/>
               </div>

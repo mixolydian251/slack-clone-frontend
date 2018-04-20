@@ -9,7 +9,11 @@ const createTeamMutation = gql`
           createTeam(name: $name){
             ok
             team {
+              id
               name
+              channels {
+                id
+              }
             }
             errors{
               path
@@ -58,11 +62,12 @@ class CreateTeam extends React.Component{
         return
       }
 
-      const {ok} = response.data.createTeam;
+      const {ok, team} = response.data.createTeam;
+      const teamId = team.id;
+      const channelId = team.channels[0].id;
 
       if (ok) {
-        this.props.history.push("/");
-        console.log(`You've created a team named "${name}"`)
+        this.props.history.push(`/dashboard/${teamId}/${channelId}`);
       }
     }
   };
